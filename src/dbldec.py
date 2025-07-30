@@ -41,6 +41,7 @@ def dbl_dec(adata, n_features=1000, random_state=1234, verbose=0):
     # generate artificial doublets
     n_cells = adata.n_obs
     print(f"Generating {n_cells} Doublets...")
+
     combined_adata = generate.generate_scdblfinder_doublets(adata_clean, n_doublets=n_cells, random_state=random_state)
 
     utils.normalize(combined_adata)
@@ -115,8 +116,13 @@ def get_features(adata, bdata=None, use_original=False):
     pca_arr = adata.obsm['X_pca']
     X_pca = sparse.csr_matrix(pca_arr)
     
+    # add library sizes
     lib_sizes = np.array(adata.raw.X.sum(axis=1)).flatten()
+    lib_sizes = np.log1p(lib_sizes)
+    low, high = np.percentile(lib_sizes, [5, 95])
+    lib_sizes = np.clip(lib_sizes, low, high)
     X_lib = sparse.csr_matrix(lib_sizes.reshape(-1, 1))
+    
     X_full = sparse.hstack([X_mat, X_scores, X_pca, X_cxds, X_lib])
 
     return X_full
@@ -124,9 +130,9 @@ def get_features(adata, bdata=None, use_original=False):
 def xgb_classifier(adata, original_adata, verbose=0):
     # Extract training set
     if verbose > 0: print("\n=== Stratified Split (by origin) ===")
-    
+
+    naive.add_naive_doublet_score(adata)
     adata_use = adata[~adata.obs['density_outlier'], :].copy()
-    naive.add_naive_doublet_score(adata_use)
     train_data, test_data = split_anndata_stratified(adata=adata_use, obs_key='origin', verbose=verbose)
     
     train_X_ext = get_features(adata=train_data, use_original=False)
@@ -140,7 +146,6 @@ def xgb_classifier(adata, original_adata, verbose=0):
     # compute cxds
     utils.cxds2(adata_raw)
     utils.preprocess(adata_raw)
-    naive.add_naive_doublet_score(adata)
     adata_raw.X = sparse.csr_matrix(adata_raw.X)
     X_full = get_features(adata=adata_raw, bdata=adata, use_original=True)    
 

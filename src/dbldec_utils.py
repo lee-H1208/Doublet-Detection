@@ -13,12 +13,9 @@ def log_transform(adata):
     sc.pp.log1p(adata)
 
 def preprocess(adata):
-    # sc.pp.highly_variable_genes(adata, min_mean=0.0125, max_mean=3, min_disp=0.5)
-    # sc.pp.pca(adata, mask_var="highly_variable", svd_solver='arpack', n_comps=50)
     n_neighbors = int(np.sqrt(adata.shape[0]))
 
     sc.pp.pca(adata, svd_solver='arpack', n_comps=30)
-    # sc.pp.neighbors(adata, n_neighbors=15, n_pcs=50)
     sc.pp.neighbors(adata, n_neighbors=n_neighbors, n_pcs=30, metric='euclidean')
     sc.tl.umap(adata)
 
