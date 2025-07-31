@@ -145,8 +145,8 @@ To run the doublet detection pipeline locally:
 
 1. Clone the Repository
    ```bash
-   git clone https://github.com/lee-H1208/Doublet-Detection.git
-   cd Doublet-Detection/src
+   git clone https://github.com/lee-H1208/doublet-detection.git
+   cd doublet-detection/src
    ```
 2. Install Required Dependencies
    ```bash
