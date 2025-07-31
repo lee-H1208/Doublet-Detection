@@ -3,7 +3,7 @@ import scanpy as sc
 
 import dbldec_utils as utils
 
-'''Adapted naive doublet score from SOLO'''
+'''Adapted naive doublet score from RADO'''
 
 def calculate_naive_doublet_score(adata):
     n_neighbors = int(np.sqrt(adata.shape[0]))
