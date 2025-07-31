@@ -135,9 +135,10 @@ Interestingly, larger PBMC datasets (e.g., pbmc-2ctrl-dm) also showed significan
 
 1. Further reduce both the false positive rate and false negative rate to improve overall classification reliability.
 2. Improve AUPRC performance on the hm-12k dataset, which exclusively contains labeled heterotypic doublets.
-3. Investigate the cause of poor model performance on the HMEC-orig-MULTI and HMEC-rep-MULTI datasets to identify potential labeling inconsistencies or data-specific challenges.
-4. Perform more systematic hyperparameter optimization to enhance model performance across diverse datasets.
-5. Package the project for easy installation via pip, including proper documentation and versioning, to support wider adoption and reproducibility.
+    - It may be necessary to add library sizes as its own hyperparameter to use in the classifier, since we know that this causes the model to overfit.
+4. Investigate the cause of poor model performance on the HMEC-orig-MULTI and HMEC-rep-MULTI datasets to identify potential labeling inconsistencies or data-specific challenges.
+5. Perform more systematic hyperparameter optimization to enhance model performance across diverse datasets.
+6. Package the project for easy installation via pip, including proper documentation and versioning, to support wider adoption and reproducibility.
 
 ## Deployment
 
