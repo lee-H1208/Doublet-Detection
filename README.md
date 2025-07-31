@@ -5,7 +5,7 @@
 The goal of this project was to develop a lightweight, easy-to-understand machine learning algorithm using Python for detecting doublets in single-cell RNA sequencing data. 
 In addition to building a functional model, this project served as a learning experience in applying both supervised and unsupervised learning techniques.
 
-Over the course of two months, [I explored and implemented](##Sources) concepts from existing state-of-the-art doublet detection algorithms to inform and guide my own approach. 
+Over the course of two months, [I explored and implemented](#Sources) concepts from existing state-of-the-art doublet detection algorithms to inform and guide my own approach. 
 Through this process, I deepened my understanding of key machine learning principles while building a practical tool from the ground up.
 
 ## Contents
