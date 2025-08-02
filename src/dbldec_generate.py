@@ -117,6 +117,7 @@ def generate_scdblfinder_doublets(adata, n_doublets=None, random_state=1234):
     doublet_adata.var_names = var_names.copy()
 
     real_adata = anndata.AnnData(X=adata.raw.X.copy(), obs=adata.obs.copy(), var=var_data.copy())
+    real_adata.obs_names = adata.obs_names.copy()
     real_adata.obs['type'] = 'real'
     real_adata.obs['src'] = 'real'
     real_adata.obs['density_outlier'] = adata.obs['density_outlier'].copy()

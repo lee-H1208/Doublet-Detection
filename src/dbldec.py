@@ -117,11 +117,8 @@ def get_features(adata, bdata=None, use_original=False):
     X_pca = sparse.csr_matrix(pca_arr)
     
     # add library sizes
-    lib_sizes = np.array(adata.raw.X.sum(axis=1)).flatten()
-    lib_sizes = np.log1p(lib_sizes)
-    low, high = np.percentile(lib_sizes, [5, 95])
-    lib_sizes = np.clip(lib_sizes, low, high)
-    X_lib = sparse.csr_matrix(lib_sizes.reshape(-1, 1))
+    lib_sizes = adata.obs['lib_sizes'].values.reshape(-1, 1)
+    X_lib = sparse.csr_matrix(lib_sizes)
     
     X_full = sparse.hstack([X_mat, X_scores, X_pca, X_cxds, X_lib])
 
@@ -132,6 +129,7 @@ def xgb_classifier(adata, original_adata, verbose=0):
     if verbose > 0: print("\n=== Stratified Split (by origin) ===")
 
     naive.add_naive_doublet_score(adata)
+    utils.calc_lib_sizes(adata)
     adata_use = adata[~adata.obs['density_outlier'], :].copy()
     train_data, test_data = split_anndata_stratified(adata=adata_use, obs_key='origin', verbose=verbose)
     
@@ -139,15 +137,10 @@ def xgb_classifier(adata, original_adata, verbose=0):
     test_X_ext = get_features(adata=test_data, use_original=False)
 
     # Prepare real data
-    adata_raw = original_adata.copy()
-    adata_raw.X = original_adata.raw.X.copy()
-    utils.normalize(adata_raw)
-    utils.log_transform(adata_raw)
-    # compute cxds
-    utils.cxds2(adata_raw)
-    utils.preprocess(adata_raw)
-    adata_raw.X = sparse.csr_matrix(adata_raw.X)
-    X_full = get_features(adata=adata_raw, bdata=adata, use_original=True)    
+    real_mask = adata.obs['type'] == 'real'
+    real_names = adata.obs_names[real_mask]
+    raw_adata = adata[real_names].copy()
+    X_full = get_features(adata=raw_adata, use_original=False)
 
     # Train a Gradient Boosting classifier for doublet detection
     print("\nTraining Gradient Boosting classifier for heterotypic doublet detection...")

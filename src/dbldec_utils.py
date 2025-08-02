@@ -71,6 +71,14 @@ def optimize_threshold(doublet_probs, y_proba, thresholds, n_cells):
 
     return thresholds[np.argmin(cost)]
 
+def calc_lib_sizes(adata):
+    lib_sizes = np.array(adata.raw.X.sum(axis=1)).flatten()
+    lib_sizes = np.log1p(lib_sizes)
+    low, high = np.percentile(lib_sizes, [5, 95])
+    lib_sizes = np.clip(lib_sizes, low, high)
+
+    adata.obs['lib_sizes'] = lib_sizes
+
 
 '''From scDblFinder'''
 
